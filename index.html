@@ -3,57 +3,106 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <meta name="description" content="Audio player" />
+    <meta name="keywords" content="HTML, CSS, JavaScript, audio" />
+    <meta
+      name="keyframes"
+      content="Lorem ipsum dolor sit amet consectetur adipisicing elit. Ipsa minima atque harum et perspiciatis ratione corrupti vero, obcaecati aut, praesentium rem voluptatum dolorum maiores blanditiis labore, soluta ex nisi rerum?"
+    />
+    <meta name="author" content="Diyorbek Bohodirov" />
+    <!-- open graph image -->
+    <meta property="og:image" content="./icon/android-chrome-192x192.png" />
+    <meta
+      property="og:title"
+      content="Diyorbek tomonidan yaratilga audio player"
+    />
+    <meta property="og:description" content="Audio tegi ogi description" />
+    <meta property="og:image:width" content="2501" />
+    <meta property="og:image:height" content="1307" />
+
+    <!-- open graph image -->
+    <title>Audio player</title>
+    <link rel="shortcut icon" href="" type="image/x-icon" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
     />
     <link rel="stylesheet" href="./style.css" />
+
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="./icon/apple-touch-icon.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="./icon/favicon-32x32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="./icon/favicon-16x16.png"
+    />
+    <link rel="manifest" href="./icon/site.webmanifest" />
+    <!-- 
+       favicon
+      -->
   </head>
   <body>
-    <img id="main_fon" src="./images/Billie Eilish - Bellyache.jpg" alt="" />
-    <div class="text">
-      <marquee id="marquee" class="marquee" behavior="" direction=""
-        >Qo'shiq nomi</marquee
-      >
-      <div class="img_volume">
-        <img id="music_img" class="img" alt="" />
-        <input
-          oninput="volume_func()"
-          value="70"
-          id="volumem"
-          class="rote"
-          type="range"
-        />
+    <img id="main_fon" alt="" />
+    <div class="player">
+      <div class="info_music">
+        <marquee id="marqueeId" behavior="" direction="">Qoshiq nomi</marquee>
       </div>
-      <input
-        oninput="play_going_func()"
-        value="0"
-        id="play_going"
-        class="clo"
-        type="range"
-      />
-      <div class="d_flex">
-        <span onclick="prev()" class="icon material-symbols-outlined">
+      <div class="img_volume">
+        <img id="music_img" alt="" />
+        <input oninput="volume_func()" value="50" id="volume" type="range" />
+      </div>
+      <div class="time">
+        <span id="current">00:00</span>
+        <span id="duration">00:00</span>
+      </div>
+      <input oninput="play_going_func()" id="play_going" type="range" />
+      <div class="play">
+        <span onclick="prev()" class="material-symbols-outlined">
           skip_previous
         </span>
-
         <span
           onclick="play_func()"
           id="play"
-          class="active_playing icon play_puse material-symbols-outlined"
+          class="active_playing playPause material-symbols-outlined playIcon"
         >
-          play_circle</span
-        >
-        <span onclick="next()" class="icon material-symbols-outlined">
+          play_circle
+        </span>
+
+        <span onclick="next()" class="material-symbols-outlined">
           skip_next
         </span>
       </div>
-      <div class="d_flex1">
-        <span class="icon1 material-symbols-outlined"> repeat </span>
-        <span class="icon1 material-symbols-outlined"> shuffle </span>
-        <span class="icon1 material-symbols-outlined"> queue_music </span>
+      <div class="playerIcon">
+        <span class="material-symbols-outlined"> repeat </span>
+        <span onclick="openem()" id="openen" class="material-symbols-outlined">
+          shuffle
+        </span>
+        <span
+          onclick="closeem()"
+          id="closeen"
+          class="material-symbols-outlined"
+        >
+          close
+        </span>
+        <span
+          id="queue_music"
+          onclick="open_music_list()"
+          class="material-symbols-outlined"
+        >
+          queue_music
+        </span>
       </div>
+      <div id="music_list" class="music_list"></div>
     </div>
     <audio id="audio"></audio>
     <script src="./index.js"></script>

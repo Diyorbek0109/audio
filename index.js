@@ -2,7 +2,7 @@ const musics = [
   {
     nomi: "Billie Eilish - Bellyache",
     manzil: function () {
-      return ` music/${this.nomi}.mp3`;
+      return `music/${this.nomi}.mp3`;
     },
     rasm: function () {
       return `images/${this.nomi}.jpg`;
@@ -26,13 +26,14 @@ const musics = [
       return `images/${this.nomi}.jpg`;
     },
   },
+
   {
     nomi: "Pharrell Williams - Happy",
     manzil: function () {
-      return ` music/${this.nomi}.mp3`;
+      return `music/${this.nomi}.mp3`;
     },
     rasm: function () {
-      return ` images/${this.nomi}.jpg`;
+      return `images/${this.nomi}.jpg`;
     },
   },
   {
@@ -48,53 +49,77 @@ const musics = [
 let music_index = 0;
 let main_fon = document.getElementById("main_fon");
 let music_img = document.getElementById("music_img");
-let marquee = document.getElementById("marquee");
+let marqueeId = document.getElementById("marqueeId");
 let audio = document.getElementById("audio");
-let volumem = document.getElementById("volumem");
-let play_going = document.getElementById("play_going");
 let play = document.getElementById("play");
-let qaytish = document.getElementById("qaytish");
+let volume = document.getElementById("volume");
+let play_going = document.getElementById("play_going");
+let current = document.getElementById("current");
+let duration = document.getElementById("duration");
 let isPlaying = false;
-
+let audio_interval = 0;
+let myinterval;
 music_info();
 function volume_func() {
-  audio.volume = volumem.value / 100;
+  audio.volume = volume.value / 100;
 }
-
 function play_going_func() {
   audio.currentTime = (audio.duration * play_going.value) / 100;
-  // play_going.value = audio.duration;
 }
-
 function music_info() {
   play_going.value = 0;
+  audio.volume = volume.value / 100;
   main_fon.src = musics[music_index].rasm();
   music_img.src = musics[music_index].rasm();
-  marquee.innerHTML = musics[music_index].nomi;
+  marqueeId.innerHTML = musics[music_index].nomi;
   audio.src = musics[music_index].manzil();
 }
+audio.addEventListener("canplaythrough", () => {
+  duration.innerHTML =
+    String(Math.trunc(Math.round(audio.duration) / 60)).padStart(2, "0") +
+    ":" +
+    String(Math.round(audio.duration) % 60).padStart(2, "0");
+});
 function audio_going() {
   play_going.value = Math.round((audio.currentTime * 100) / audio.duration);
-  if (audio.currentTime == audio.duration) {
-    clearInterval(myIntrval);
-    play.innerHTML = "pause_circle";
+  current.innerHTML =
+    String(Math.trunc(Math.round(audio.currentTime) / 60)).padStart(2, "0") +
+    ":" +
+    String(Math.round(audio.currentTime) % 60).padStart(2, "0");
+
+  if (Math.floor(audio.currentTime) == Math.floor(audio.duration)) {
+    clearInterval(myinterval);
     next();
   }
 }
 function play_func() {
-  myIntrval = setInterval(audio_going, 100);
-  isPlaying = !isPlaying;
+  clearInterval(myinterval);
+  myinterval = setInterval(audio_going, 1000);
   if (isPlaying) {
-    play.innerHTML = "pause_circle";
-    audio.play();
-    console.log("play");
-  } else {
+    isPlaying = false;
     play.innerHTML = "play_circle";
     audio.pause();
-    console.log("pause");
+    clearInterval(myinterval);
+  } else {
+    isPlaying = true;
+    play.innerHTML = "pause_circle";
+    audio.play();
   }
-  if (audio.value - 100 == 0) {
-    next();
+  ////music listni ichidagi itemlar
+  music_list.querySelectorAll("span").forEach((element) => {
+    element.innerHTML = "play_circle";
+  });
+  music_list.children[music_index]
+    .querySelectorAll("span")
+    .forEach((element) => {
+      element.innerHTML = "pause_circle";
+    });
+  if (!isPlaying) {
+    music_list.children[music_index]
+      .querySelectorAll("span")
+      .forEach((element) => {
+        element.innerHTML = "play_circle";
+      });
   }
 }
 function next() {
@@ -104,9 +129,13 @@ function next() {
     music_index = 0;
   }
   isPlaying = false;
-  // audio.src = musics[music_index].manzil();
   music_info();
   play_func();
+  if (openen.style.display == "none") {
+    random();
+  } else {
+    anti_random();
+  }
 }
 function prev() {
   if (music_index == 0) {
@@ -114,8 +143,104 @@ function prev() {
   } else {
     music_index -= 1;
   }
-  // audio.src = musics[music_index].manzil();
   isPlaying = false;
   music_info();
   play_func();
 }
+///////music_list
+let music_list = document.getElementById("music_list");
+let queue_music = document.getElementById("queue_music");
+window.addEventListener("click", (event) => {
+  if (
+    event.target != music_list &&
+    event.target != queue_music &&
+    !event.target.classList.value.includes("tegma")
+  ) {
+    music_list.style.display = "none";
+  }
+});
+function open_music_list() {
+  music_list.style.display = "block";
+}
+for (let i = 0; i < musics.length; i++) {
+  let music_item = document.createElement("div");
+  let music_item_img = document.createElement("img");
+  let music_item_name = document.createElement("p");
+  let music_item_is_play = document.createElement("span");
+  music_item.classList.add("tegma");
+  music_item_img.classList.add("tegma");
+  music_item_name.classList.add("tegma");
+  music_item_is_play.classList.add("tegma");
+  music_list.appendChild(music_item);
+  music_item.appendChild(music_item_img);
+  music_item.appendChild(music_item_name);
+  music_item.appendChild(music_item_is_play);
+  music_item.classList.add("music_item");
+  music_item_img.classList.add("music_item_img");
+  music_item_is_play.classList.add("material-symbols-outlined");
+  music_item_is_play.innerHTML = "play_circle";
+  music_item_name.innerHTML = musics[i].nomi;
+  music_item_img.src = musics[i].rasm();
+  music_item.addEventListener("click", () => {
+    music_list.querySelectorAll("span").forEach((element) => {
+      element.innerHTML = "play_circle";
+    });
+    music_item.querySelectorAll("span").forEach((element) => {
+      element.innerHTML = "pause_circle";
+    });
+    if (isPlaying && music_index == i) {
+      music_list.querySelectorAll("span").forEach((element) => {
+        element.innerHTML = "play_circle";
+      });
+    }
+    if (music_index == i) {
+      play_func();
+    } else {
+      music_index = i;
+      music_info();
+      isPlaying = false;
+      play_func();
+    }
+  });
+}
+
+//// random
+let openen = document.getElementById("openen");
+let closeen = document.getElementById("closeen");
+let isRandom = false;
+closeen.style.display = "none";
+openen.style.display = "block";
+
+function random() {
+  let ran = Math.trunc(Math.random() * musics.length);
+  isRandom = true;
+  if (isRandom == true) {
+    main_fon.src = musics[ran].rasm();
+    music_img.src = musics[ran].rasm();
+    marqueeId.innerHTML = musics[ran].nomi;
+    audio.src = musics[ran].manzil();
+    openen.style.display = "none";
+    closeen.style.display = "block";
+    play_func();
+    isRandom = false;
+  } else {
+    alert("no work");
+  }
+}
+function anti_random() {
+  main_fon.src = musics[music_index].rasm();
+  music_img.src = musics[music_index].rasm();
+  marqueeId.innerHTML = musics[music_index].nomi;
+  audio.src = musics[music_index].manzil();
+}
+function openem() {
+  openen.style.display = "none";
+  closeen.style.display = "block";
+}
+function closeem() {
+  closeen.style.display = "none";
+  openen.style.display = "block";
+}
+
+let aniqlovchi = musics.length;
+console.log(aniqlovchi);
